@@ -4,12 +4,12 @@ os.getcwd()
 #### Example: Github API Calls
 urlprefix = 'https://api.github.com/search/repositories?'
 API_KEY = 'YOUR_API_KEY_GOES_HERE'
+query = urllib.parse.urlencode({'q':'language:python','sort':'stars'})
+url = urlprefix + query
 # get response using 'request' package
 resp = requests.get(url)
 outcome = resp.json()
 # get response using 'urllib' ,'json', and 'ssl' packages
-query = urllib.parse.urlencode({'q':'language:python','sort':'stars'})
-url = urlprefix + query
 gcontext = ssl.SSLContext()
 gresp = urllib.request.urlopen(url, context=gcontext)
 rjson = json.loads(gresp.read())
