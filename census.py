@@ -20,7 +20,7 @@ variable_url = 'https://api.census.gov/data/2018/acs/acs5/variables.json'
 resp = requests.get(variable_url)
 variables = resp.json()    ## a full list of variables and descriptions
 #create query
-var_list = ['B19001B_014E', 'B19101A_004E']
+var_list = ['B19001B_014E', 'B19101A_004E'] ## You can create your own variable list
 var_string = ''
 for var in var_list:
     var_string += var + ','
