@@ -1,9 +1,9 @@
 import json, os, requests,urllib, ssl
 import numpy as np
 os.getcwd()
+#### Example: Github API Calls
 urlprefix = 'https://api.github.com/search/repositories?'
 API_KEY = 'YOUR_API_KEY_GOES_HERE'
-
 # get response using 'request' package
 resp = requests.get(url)
 outcome = resp.json()
