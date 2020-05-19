@@ -3,7 +3,7 @@ import pandas as pd
 import numpy as np
 import sklearn
 
-# linear regression on TESL prostate dataset
+# Linear Regression on TESL prostate dataset (source code)
 prostate_url = 'http://web.stanford.edu/~hastie/ElemStatLearn/datasets/prostate.data'
 delimiter = '\t'
 data = pd.read_csv(prostate_url, sep = delimiter).drop(['Unnamed: 0', 'train'], axis = 1)
@@ -26,7 +26,7 @@ def OLSRegress(dataMat, labelMat):
         print ("This matrix is singular, cannot do inverse")
         return
     else:
-        beta = np.linalg.inv(xTx) * xTy
+        beta = np.linalg.inv(xTx) * xTy # Alternative: beta = nnp.linalg.solve(xTx, xTy)
     return beta
 
 beta = OLSRegress(dataMat, labelMat)
