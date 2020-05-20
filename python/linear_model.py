@@ -1,4 +1,3 @@
-
 import pandas as pd
 import numpy as np
 import sklearn
@@ -10,6 +9,7 @@ delimiter = '\t'
 data = pd.read_csv(prostate_url, sep = delimiter).drop(['Unnamed: 0', 'train'], axis = 1)
 data.head(5)
 data.to_csv(os.getcwd() + 'prostate.csv')
+
 def loadDataSet(data):
     numFeat = len(data.columns) - 1
     xArr = data.iloc[:,0:numFeat]
@@ -42,5 +42,3 @@ def OLSRegress(dataMat, labelMat, corrThreshold = 0.7):
     return beta
 
 beta = OLSRegress(dataMat, labelMat)
-
-def pointEst(beta, dataMat):
