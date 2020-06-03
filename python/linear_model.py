@@ -3,18 +3,30 @@ import numpy as np
 import sklearn
 import os
 
-# Linear Regression on TESL prostate dataset (source code)
-prostate_url = 'http://web.stanford.edu/~hastie/ElemStatLearn/datasets/prostate.data'
-delimiter = '\t'
-data = pd.read_csv(prostate_url, sep = delimiter).drop(['Unnamed: 0', 'train'], axis = 1)
-data.head(5)
-data.to_csv(os.getcwd() + 'prostate.csv')
+def sampleData(data, fraction = 0.75):
+    allSet = data
+    trainingSet = allSet.sample(frac = fraction).sort_index()
+    testSet = pd.DataFrame(columns = allSet.columns)
+    testindex = []
+    for i in data.index.values:
+        if i in trainingSet.index.values:
+            allSet = allSet.drop(i)
+    testSet = allSet
+    print ('Training Set: {0}, Test Set: {1}'.format(len(trainingSet),len(testSet)))
+    return (trainingSet, testSet)
 
 def loadDataSet(data):
     numFeat = len(data.columns) - 1
     xArr = data.iloc[:,0:numFeat]
     yArr = data.iloc[:,numFeat]
     return(xArr, yArr)
+
+# Linear Regression on TESL prostate dataset (source code)
+prostate_url = 'http://web.stanford.edu/~hastie/ElemStatLearn/datasets/prostate.data'
+delimiter = '\t'
+data = pd.read_csv(prostate_url, sep = delimiter).drop(['Unnamed: 0', 'train'], axis = 1)
+data.head(5)
+data.to_csv(os.getcwd() + 'prostate.csv')
 
 dataMat, labelMat = loadDataSet(data)
 
@@ -42,3 +54,13 @@ def OLSRegress(dataMat, labelMat, corrThreshold = 0.7):
     return beta
 
 beta = OLSRegress(dataMat, labelMat)
+
+
+# Scikit-learn 1.1.1
+reg = sklearn.linear_model.LinearRegression()
+data_train, data_test = sampleData(data, fraction = 0.7)
+dataMat_train, labelMat_train = loadDataSet(data_train)
+dataMat_test, labelMat_test = loadDataSet(data_test)
+reg.fit(dataMat_train, labelMat_train)
+reg.coef_
+reg.predict(dataMat_test)
