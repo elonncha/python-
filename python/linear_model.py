@@ -2,6 +2,7 @@ import pandas as pd
 import numpy as np
 import sklearn
 import os
+import matplotlib.pyplot as plt
 
 def sampleData(data, fraction = 0.75):
     allSet = data
@@ -56,11 +57,20 @@ def OLSRegress(dataMat, labelMat, corrThreshold = 0.7):
 beta = OLSRegress(dataMat, labelMat)
 
 
-# Scikit-learn 1.1.1
+# Scikit-learn 1.1.1 OLS
 reg = sklearn.linear_model.LinearRegression()
 data_train, data_test = sampleData(data, fraction = 0.7)
 dataMat_train, labelMat_train = loadDataSet(data_train)
 dataMat_test, labelMat_test = loadDataSet(data_test)
 reg.fit(dataMat_train, labelMat_train)
 reg.coef_
-reg.predict(dataMat_test)
+pred = reg.predict(dataMat_train).transpose()
+
+sklearn.metrics.mean_squared_error(labelMat_train, pred)
+sklearn.metrics.r2_score(labelMat_train, pred)
+
+plt.scatter(dataMat_train.iloc[:,0], pred)
+plt.show()
+
+# Scikit-learn 1.1.2 Ridge
+reg = sklearn.linear_model.Ridge(alpha = 0.5)
