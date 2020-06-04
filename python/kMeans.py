@@ -9,7 +9,6 @@ def loadDataSet(fileName):
         floatLine = map(float,curLine)
         dataMat.append(list(floatLine))
     return dataMat
-# pandas function
 def loadDataSetInPandas(fileName, by = '\t', is_header = None):
     dataMat = pd.read_table(fileName, sep = by, header = is_header)
     colNum = dataMat.shape[1]
@@ -19,8 +18,15 @@ def loadDataSetInPandas(fileName, by = '\t', is_header = None):
     dataMat.columns = newColName
     return dataMat
 def distMeasure(vecA, vecB, order = 2):
-    dist = np.sqrt(np.sum(np.power(vecA - vecB, order)))
+    dist = np.sqrt(np.sum(np.abs(np.power(vecA - vecB, order))))
     return dist #np.linalg.norm(vecA-vecB)
+def proximityMatrix(dataMat, order=2):
+    n = dataMat.shape[0]
+    Mat = np.zeros((n,n))
+    for i in range(n):
+        for j in range(n):
+            Mat[i,j] = distMeasure(dataMat.iloc[i,:], dataMat.iloc[j,:])
+    return Mat
 def assignCent(dataMat, k):
     n = dataMat.shape[1]
     centroids = np.zeros((k,n))
@@ -31,9 +37,6 @@ def assignCent(dataMat, k):
         for j in range(0,k):
             centroids[j,i] = xRand[j]
     return centroids
-
-dataMat = loadDataSetInPandas('testSet_kmeans.txt')
-
 def kMeans(dataMat, k):
     k = 6
     m = dataMat.shape[0]
@@ -71,8 +74,8 @@ def kMeans(dataMat, k):
 
     return centroids, clusterDoc
 
+dataMat = loadDataSetInPandas('testSet_kmeans.txt')
 kMeans(dataMat,6)
-
 
 
 
