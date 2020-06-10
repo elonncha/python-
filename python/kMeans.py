@@ -1,5 +1,7 @@
 import numpy as np
 import pandas as pd
+import copy, os
+os.chdir('/Users/eloncha/Documents/GitHub/Elon/python')
 
 def loadDataSet(fileName):
     dataMat = []
@@ -38,7 +40,6 @@ def assignCent(dataMat, k):
             centroids[j,i] = xRand[j]
     return centroids
 def kMeans(dataMat, k):
-    k = 6
     m = dataMat.shape[0]
     p = dataMat.shape[1]
     centroids = assignCent(dataMat, k)
@@ -52,7 +53,6 @@ def kMeans(dataMat, k):
     while clusterChanged:
         iteTime += 1
         clusterChanged = False
-
         for i in range(0, m): # loop through each data point to assign it to the nearest centroid
             minDist, minIndex = np.Inf, -1
             distList = np.zeros((1, k))
@@ -65,18 +65,42 @@ def kMeans(dataMat, k):
                 clusterChanged = True
                 clusterDoc.iloc[i, p+1] = minDist
                 clusterDoc.iloc[i, p] = minIndex
-
         for cent in range(0, k): # loop through each clusters to update centroids
             centroids[cent] = np.mean(clusterDoc[clusterDoc['minIndex'] == cent].iloc[:, 0:p], axis=0)
-
         print('Cluster Assignment Changed.')
         print('Iteration {0}'.format(str(iteTime)))
-
     return centroids, clusterDoc
-
 dataMat = loadDataSetInPandas('testSet_kmeans.txt')
-kMeans(dataMat,6)
+centroids, cluster = kMeans(dataMat,6)
 
+#Bi-Kmeans
+def rankSSE(dataMat1, dataMat2):
+    SSE1 = np.sum(dataMat1['minDist'])
+    SSE2 = np.sum(dataMat2['minDist'])
+    if SSE1 > SSE2:
+        print('Cluster 1 has higher SSE')
+        return dataMat1, dataMat2
+    elif SSE1 <= SSE2:
+        print('Cluster 2 has higher SSE')
+        return dataMat2, dataMat1
+def biKmeans(dataMat, k):
+    curK = 0
+    m = dataMat.shape[0]
+    p = dataMat.shape[1]
+    cList = np.zeros((k,p))
+    dList = pd.DataFrame(columns = kMeans(dataMat, 2)[1].columns)
+    while curK < k:
+        centroids, cluster = kMeans(dataMat.iloc[:,0:p], 2)
+        dataMat1, dataMat2 = cluster[cluster['minIndex'] == 0], cluster[cluster['minIndex'] == 1]
+        deadMat, surviveMat = rankSSE(dataMat1, dataMat2)
+        cdf = centroids[surviveMat['minIndex'].values[0]]
+        cList[curK] = cdf
+        surviveMat.iloc[:,p] = curK
+        dList = surviveMat.merge(dList, how = 'outer')
+        curK += 1
+        dataMat = copy.copy(deadMat)
+    return cList, dList
+cList, dList = biKmeans(dataMat, 6)
 
 
 
