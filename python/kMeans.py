@@ -3,6 +3,7 @@ import pandas as pd
 import copy, os
 os.chdir('/Users/eloncha/Documents/GitHub/Elon/python')
 
+### Kmeans
 def loadDataSet(fileName):
     dataMat = []
     fr = open(fileName)
@@ -73,7 +74,8 @@ def kMeans(dataMat, k):
 dataMat = loadDataSetInPandas('testSet_kmeans.txt')
 centroids, cluster = kMeans(dataMat,6)
 
-#Bi-Kmeans
+
+### Bi-Kmeans
 def rankSSE(dataMat1, dataMat2):
     SSE1 = np.sum(dataMat1['minDist'])
     SSE2 = np.sum(dataMat2['minDist'])
@@ -103,7 +105,37 @@ def biKmeans(dataMat, k):
 cList, dList = biKmeans(dataMat, 6)
 
 
+### Kmeans in scikit.learn
+import matplotlib.pyplot as plt
+from sklearn.cluster import KMeans
+from sklearn import datasets
 
+np.random.seed(6)
+kmeans = KMeans(n_clusters = 6, init = 'k-means++', n_init = 1).fit(dataMat)
+kmeans.cluster_centers_
+kmeans.labels_
 
+plt.scatter(kmeans.cluster_centers_[0:6,0], kmeans.cluster_centers_[0:6,1])
+plt.show()
 
+### Vector Quantization (LVQ)
+import scipy as sp
+from sklearn import cluster
 
+from scipy.misc import face
+face = face(gray=True)
+plt.figure(1, figsize = (3,2.2))
+plt.imshow(face, cmap = plt.cm.gray, vmin = 0, vmax = 250)
+plt.show()
+
+X = face.reshape((-1,1))
+n_clusters = 3
+kmeans = KMeans(n_clusters = n_clusters, n_init = 1).fit(X)
+values = kmeans.cluster_centers_.squeeze()
+labels = kmeans.labels_
+face_compressed = np.choose(labels, values)
+face_compressed.shape = face.shape
+
+plt.figure(2, figsize = (3,2.2))
+plt.imshow(face_compressed, cmap = plt.cm.gray, vmin = 0, vmax = 250)
+plt.show()

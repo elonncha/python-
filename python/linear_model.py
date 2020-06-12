@@ -1,9 +1,6 @@
 import pandas as pd
 import numpy as np
-import sklearn
 import os
-import matplotlib.pyplot as plt
-
 def sampleData(data, fraction = 0.75):
     allSet = data
     trainingSet = allSet.sample(frac = fraction).sort_index()
@@ -58,13 +55,16 @@ beta = OLSRegress(dataMat, labelMat)
 
 
 # Scikit-learn 1.1.1 OLS
-reg = sklearn.linear_model.LinearRegression()
+from sklearn.linear_model import LinearRegression
+import sklearn.metrics
+import matplotlib.pyplot as plt
+reg = LinearRegression()
 data_train, data_test = sampleData(data, fraction = 0.7)
 dataMat_train, labelMat_train = loadDataSet(data_train)
 dataMat_test, labelMat_test = loadDataSet(data_test)
 reg.fit(dataMat_train, labelMat_train)
 reg.coef_
-pred = reg.predict(dataMat_train).transpose()
+pred = reg.predict(dataMat_train)
 
 sklearn.metrics.mean_squared_error(labelMat_train, pred)
 sklearn.metrics.r2_score(labelMat_train, pred)
